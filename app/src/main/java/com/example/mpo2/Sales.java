@@ -8,57 +8,153 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link Sales#newInstance} factory method to
- * create an instance of this fragment.
+ * Sale represents sale operation.
+ *
+ * @author Refresh Team
+ *
  */
-public class Sales extends Fragment {
+public class Sales {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private final int id;
+    private String startTime;
+    private String endTime;
+    private String status;
+    private List<LineItem> items;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
-    public Sales() {
-        // Required empty public constructor
+    public Sales(int id, String startTime) {
+        this(id, startTime, startTime, "", new ArrayList<LineItem>());
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Sales.
+     * Constructs a new Sale.
+     * @param id ID of this Sale.
+     * @param startTime start time of this Sale.
+     * @param endTime end time of this Sale.
+     * @param status status of this Sale.
+     * @param items list of LineItem in this Sale.
      */
-    // TODO: Rename and change types and number of parameters
-    public static Sales newInstance(String param1, String param2) {
-        Sales fragment = new Sales();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public Sales(int id, String startTime, String endTime, String status, List<LineItem> items) {
+        this.id = id;
+        this.startTime = startTime;
+        this.status = status;
+        this.endTime = endTime;
+        this.items = items;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    
+
+    /**
+     * Returns list of LineItem in this Sale.
+     * @return list of LineItem in this Sale.
+     */
+    public List<LineItem> getAllLineItem(){
+        return items;
+    }
+
+    /**
+     * Add Product to Sale.
+     * @param item product to be added.
+     * @param quantity quantity of product that added.
+     * @return LineItem of Sale that just added.
+     */
+    public LineItem addLineItem(Item item, int quantity) {
+
+        for (LineItem lineItem : items) {
+            if (lineItem.getItem().getId() == item.getId()) {
+                lineItem.addQuantity(quantity);
+                return lineItem;
+            }
         }
+
+        LineItem lineItem = new LineItem(item, quantity);
+        items.add(lineItem);
+        return lineItem;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sales, container, false);
+    public int size() {
+        return items.size();
     }
+
+    /**
+     * Returns a LineItem with specific index.
+     * @param index of specific LineItem.
+     * @return a LineItem with specific index.
+     */
+    public LineItem getLineItemAt(int index) {
+        if (index >= 0 && index < items.size())
+            return items.get(index);
+        return null;
+    }
+
+    /**
+     * Returns the total price of this Sale.
+     * @return the total price of this Sale.
+     */
+    public double getTotal() {
+        double amount = 0;
+        for(LineItem lineItem : items) {
+            amount += lineItem.getTotalPriceAtSale();
+        }
+        return amount;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Returns the total quantity of this Sale.
+     * @return the total quantity of this Sale.
+     */
+    public int getOrders() {
+        int orderCount = 0;
+        for (LineItem lineItem : items) {
+            orderCount += lineItem.getQuantity();
+        }
+        return orderCount;
+    }
+
+    /**
+     * Returns the description of this Sale in Map format.
+     * @return the description of this Sale in Map format.
+     */
+    public Map<String, String> toMap() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("id",id + "");
+        map.put("startTime", startTime);
+        map.put("endTime", endTime);
+        map.put("status", getStatus());
+        map.put("total", getTotal() + "");
+        map.put("orders", getOrders() + "");
+
+        return map;
+    }
+
+    /**
+     * Removes LineItem from Sale.
+     * @param lineItem lineItem to be removed.
+     */
+    public void removeItem(LineItem lineItem) {
+        items.remove(lineItem);
+    }
+
 }

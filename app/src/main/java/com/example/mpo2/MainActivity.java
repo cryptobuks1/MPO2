@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TabLayout tablayout;
     private ViewPager viewPager;
-    private TabItem inventory, sales, invoicing;
+    private TabItem inventory, salesfragment, invoicing;
     public PagerAdapter pagerAdapter;
 
     @Override
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
         tablayout = (TabLayout) findViewById(R.id.tablayout);
         inventory = (TabItem) findViewById(R.id.inventory);
-        sales = (TabItem) findViewById(R.id.sales);
+        salesfragment = (TabItem) findViewById(R.id.sales);
         invoicing = (TabItem) findViewById(R.id.invoicing);
         viewPager = findViewById(R.id.viewpager);
 
@@ -54,6 +54,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tablayout));
+
     }
+
+    /**
+     * Get view-pager
+     * @return
+     */
+    public ViewPager getViewPager() {
+        return viewPager;
+    }
+
+
 }
 

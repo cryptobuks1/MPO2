@@ -21,7 +21,7 @@ public class PageAdapter extends FragmentPagerAdapter {
             case 0:
                 return new Inventory();
             case 1:
-                return new Sales();
+                return new SalesFragment();
             case 2:
                 return new Invoicing();
             default:
