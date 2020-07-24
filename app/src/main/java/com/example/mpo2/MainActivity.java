@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TabLayout tablayout;
     private ViewPager viewPager;
-    private TabItem inventoryfragment, salesfragment, invoicing;
+    private TabItem inventoryfragment, salesfragment, invoicingfragment;
     public PagerAdapter pagerAdapter;
 
     @Override
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         tablayout = (TabLayout) findViewById(R.id.tablayout);
         inventoryfragment = (TabItem) findViewById(R.id.inventory);
         salesfragment = (TabItem) findViewById(R.id.sales);
-        invoicing = (TabItem) findViewById(R.id.invoicing);
+        invoicingfragment = (TabItem) findViewById(R.id.invoicing);
         viewPager = findViewById(R.id.viewpager);
 
         pagerAdapter = new PageAdapter(getSupportFragmentManager(), tablayout.getTabCount());

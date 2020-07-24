@@ -23,7 +23,7 @@ public class PageAdapter extends FragmentPagerAdapter {
             case 1:
                 return new SalesFragment();
             case 2:
-                return new Invoicing();
+                return new InvoicingFragment();
             default:
                 return null;
         }
