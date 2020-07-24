@@ -1,64 +1,71 @@
 package com.example.mpo2;
 
-import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link Inventory#newInstance} factory method to
- * create an instance of this fragment.
+ * This class is service locater for Product Catalog and Stock.
+ *
+ * @author Refresh Team
+ *
  */
-public class Inventory extends Fragment {
+public class Inventory {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private Stock stock;
+    private ItemCatalog productCatalog;
+    private static Inventory instance = null;
+    private static InventoryDao inventoryDao = null;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public Inventory() {
-        // Required empty public constructor
+    /**
+     * Constructs Data Access Object of inventory.
+     * @throws DaoNoSetException if DAO is not exist.
+     */
+    private Inventory() throws DaoNoSetException {
+        if (!isDaoSet()) {
+            throw new DaoNoSetException();
+        }
+        stock = new Stock(inventoryDao);
+        productCatalog = new ItemCatalog(inventoryDao);
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Inventory.
+     * Determines whether the DAO already set or not.
+     * @return true if the DAO already set; otherwise false.
      */
-    // TODO: Rename and change types and number of parameters
-    public static Inventory newInstance(String param1, String param2) {
-        Inventory fragment = new Inventory();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static boolean isDaoSet() {
+        return inventoryDao != null;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    /**
+     * Sets the database connector.
+     * @param dao Data Access Object of inventory.
+     */
+    public static void setInventoryDao(InventoryDao dao) {
+        inventoryDao = dao;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_inventory, container, false);
+    /**
+     * Returns product catalog using in this inventory.
+     * @return product catalog using in this inventory.
+     */
+    public ItemCatalog getProductCatalog() {
+        return productCatalog;
     }
+
+    /**
+     * Returns stock using in this inventory.
+     * @return stock using in this inventory.
+     */
+    public Stock getStock() {
+        return stock;
+    }
+
+    /**
+     * Returns the instance of this singleton class.
+     * @return instance of this class.
+     * @throws DaoNoSetException if DAO was not set.
+     */
+    public static Inventory getInstance() throws DaoNoSetException {
+        if (instance == null)
+            instance = new Inventory();
+        return instance;
+    }
+
 }

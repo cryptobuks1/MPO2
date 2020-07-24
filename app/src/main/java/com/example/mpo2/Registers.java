@@ -8,8 +8,8 @@ package com.example.mpo2;
  */
 public class Registers {
     private static Registers instance = null;
-    private static SalesDao salesDao = null;
-    private static StockExtension stock = null;
+    private static SalesDao saleDao = null;
+    private static Stock stock = null;
 
     private Sales currentSale;
 
@@ -17,7 +17,7 @@ public class Registers {
         if (!isDaoSet()) {
             throw new DaoNoSetException();
         }
-        stock = Stock.getInstance().getStock();
+        stock = Inventory.getInstance().getStock();
 
     }
 
@@ -26,7 +26,7 @@ public class Registers {
      * @return true if the DAO already set; otherwise false.
      */
     public static boolean isDaoSet() {
-        return salesDao != null;
+        return saleDao != null;
     }
 
     public static Registers getInstance() throws DaoNoSetException {
@@ -39,7 +39,7 @@ public class Registers {
      * @param dao DAO of sale
      */
     public static void setSaleDao(SalesDao dao) {
-        salesDao = dao;
+        saleDao = dao;
     }
 
     /**
@@ -51,27 +51,27 @@ public class Registers {
         if (currentSale != null) {
             return currentSale;
         }
-        currentSale = salesDao.initiateSale(startTime);
+        currentSale = saleDao.initiateSale(startTime);
         return currentSale;
     }
 
     /**
      * Add Product to Sale.
-     * @param item product to be added.
+     * @param product product to be added.
      * @param quantity quantity of product that added.
      * @return LineItem of Sale that just added.
      */
-    public LineItem addItem(Item item, int quantity) {
+    public LineItem addItem(Item product, int quantity) {
         if (currentSale == null)
             initiateSale(DateTimeSettings.getCurrentTime());
 
-        LineItem lineItem = currentSale.addLineItem(item, quantity);
+        LineItem lineItem = currentSale.addLineItem(product, quantity);
 
         if (lineItem.getId() == LineItem.UNDEFINED) {
-            int lineId = salesDao.addLineItem(currentSale.getId(), lineItem);
+            int lineId = saleDao.addLineItem(currentSale.getId(), lineItem);
             lineItem.setId(lineId);
         } else {
-            salesDao.updateLineItem(currentSale.getId(), lineItem);
+            saleDao.updateLineItem(currentSale.getId(), lineItem);
         }
 
         return lineItem;
@@ -92,9 +92,9 @@ public class Registers {
      */
     public void endSale(String endTime) {
         if (currentSale != null) {
-            salesDao.endSale(currentSale, endTime);
+            saleDao.endSale(currentSale, endTime);
             for(LineItem line : currentSale.getAllLineItem()){
-                StockExtension.updateStockSum(line.getItem().getId(), line.getQuantity());
+                stock.updateStockSum(line.getItem().getId(), line.getQuantity());
             }
             currentSale = null;
         }
@@ -116,7 +116,7 @@ public class Registers {
      * @return true if success to load Sale from ID; otherwise false.
      */
     public boolean setCurrentSale(int id) {
-        currentSale = salesDao.getSaleById(id);
+        currentSale = saleDao.getSaleById(id);
         return false;
     }
 
@@ -134,7 +134,7 @@ public class Registers {
      */
     public void cancleSale() {
         if (currentSale != null){
-            salesDao.cancelSale(currentSale,DateTimeSettings.getCurrentTime());
+            saleDao.cancelSale(currentSale,DateTimeSettings.getCurrentTime());
             currentSale = null;
         }
     }
@@ -149,7 +149,7 @@ public class Registers {
     public void updateItem(int saleId, LineItem lineItem, int quantity, double priceAtSale) {
         lineItem.setUnitPriceAtSale(priceAtSale);
         lineItem.setQuantity(quantity);
-        salesDao.updateLineItem(saleId, lineItem);
+        saleDao.updateLineItem(saleId, lineItem);
     }
 
     /**
@@ -157,7 +157,7 @@ public class Registers {
      * @param lineItem lineItem to be removed.
      */
     public void removeItem(LineItem lineItem) {
-        salesDao.removeLineItem(lineItem.getId());
+        saleDao.removeLineItem(lineItem.getId());
         currentSale.removeItem(lineItem);
         if (currentSale.getAllLineItem().isEmpty()) {
             cancleSale();

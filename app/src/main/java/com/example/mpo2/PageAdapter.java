@@ -19,7 +19,7 @@ public class PageAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return new Inventory();
+                return new InventoryFragment();
             case 1:
                 return new SalesFragment();
             case 2:

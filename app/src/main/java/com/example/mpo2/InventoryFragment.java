@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
  * Use the {@link Inventory#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SalesFragment extends Fragment {
+public class InventoryFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,7 +23,7 @@ public class SalesFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public SalesFragment() {
+    public InventoryFragment() {
         // Required empty public constructor
     }
 
@@ -36,8 +36,8 @@ public class SalesFragment extends Fragment {
      * @return A new instance of fragment Inventory.
      */
     // TODO: Rename and change types and number of parameters
-    public static SalesFragment newInstance(String param1, String param2) {
-        SalesFragment fragment = new SalesFragment();
+    public static InventoryFragment newInstance(String param1, String param2) {
+        InventoryFragment fragment = new InventoryFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

@@ -3,104 +3,103 @@ package com.example.mpo2;
 import java.util.List;
 
 /**
- * Book that keeps list of Item.
+ * Book that keeps list of Product.
  *
  * @author Refresh Team
  *
  */
 public class ItemCatalog {
 
-    private StockDao stockDao;
+    private InventoryDao inventoryDao;
 
     /**
-     * Constructs Data Access Object of inventory in ItemCatalog.
-     * @param stockDao DAO of inventory.
+     * Constructs Data Access Object of inventory in ProductCatalog.
+     * @param inventoryDao DAO of inventory.
      */
-    public ItemCatalog(StockDao stockDao) {
-        this.stockDao = stockDao;
+    public ItemCatalog(InventoryDao inventoryDao) {
+        this.inventoryDao = inventoryDao;
     }
 
     /**
-     * Constructs Item and adds Item to inventory.
-     * @param name name of Item.
-     * @param barcode barcode of Item.
-     * @param salePrice price of Item.
-     * @return true if Item adds in inventory success ; otherwise false.
+     * Constructs product and adds product to inventory.
+     * @param name name of product.
+     * @param barcode barcode of product.
+     * @param salePrice price of product.
+     * @return true if product adds in inventory success ; otherwise false.
      */
-    public boolean addItem(String name, String barcode, double salePrice) {
-        Item Item = new Item(name, barcode, salePrice);
-        int id = stockDao.addProduct(Item);
+    public boolean addProduct(String name, String barcode, double salePrice) {
+        Item product = new Item(name, barcode, salePrice);
+        int id = inventoryDao.addProduct(product);
         return id != -1;
     }
 
     /**
-     * Edits Item.
-     * @param
-     * @return true if Item edits success ; otherwise false.
+     * Edits product.
+     * @param product the product to be edited.
+     * @return true if product edits success ; otherwise false.
      */
-    public boolean editItem(Item item) {
-        boolean respond = stockDao.editProduct(item);
+    public boolean editProduct(Item product) {
+        boolean respond = inventoryDao.editProduct(product);
         return respond;
     }
 
     /**
-     * Returns Item from inventory finds by barcode.
-     * @param barcode barcode of Item.
-     * @return Item
+     * Returns product from inventory finds by barcode.
+     * @param barcode barcode of product.
+     * @return product
      */
-    public Item getItemByBarcode(String barcode) {
-        return stockDao.getProductByBarcode(barcode);
+    public Item getProductByBarcode(String barcode) {
+        return inventoryDao.getProductByBarcode(barcode);
     }
 
     /**
-     * Returns Item from inventory finds by id.
-     * @param id id of Item.
-     * @return Item
+     * Returns product from inventory finds by id.
+     * @param id id of product.
+     * @return product
      */
-    public Item getItemById(int id) {
-        return stockDao.getProductById(id);
+    public Item getProductById(int id) {
+        return inventoryDao.getProductById(id);
     }
 
     /**
-     * Returns list of all Items in inventory.
-     * @return list of all Items in inventory.
+     * Returns list of all products in inventory.
+     * @return list of all products in inventory.
      */
-    /** public List<Item> getAllProduct() {
-     return StockDao.getAllItem();
-     NIKNIK
-     }**/
-
-    /**
-     * Returns list of Item in inventory finds by name.
-     * @param name name of Item.
-     * @return list of Item in inventory finds by name.
-     */
-    public List<Item> getItemByName(String name) {
-        return stockDao.getProductByName(name);
+    public List<Item> getAllProduct() {
+        return inventoryDao.getAllProduct();
     }
 
     /**
-     * Search Item from string in inventory.
+     * Returns list of product in inventory finds by name.
+     * @param name name of product.
+     * @return list of product in inventory finds by name.
+     */
+    public List<Item> getProductByName(String name) {
+        return inventoryDao.getProductByName(name);
+    }
+
+    /**
+     * Search product from string in inventory.
      * @param search string for searching.
-     * @return list of Item.
+     * @return list of product.
      */
-    /**public static List<Item> searchItem(String search) {
-     return StockDao.searchItem(search);
-     }**/
-
-    /**
-     * Clears ItemCatalog.
-     */
-    public void clearItemCatalog() {
-        stockDao.clearProductCatalog();
+    public List<Item> searchProduct(String search) {
+        return inventoryDao.searchProduct(search);
     }
 
     /**
-     * Hidden Item from inventory.
-     * @param Item The Item to be hidden.
+     * Clears ProductCatalog.
      */
-    public static void suspendItem(Item Item) {
-        StockDao.suspendProduct(Item);
+    public void clearProductCatalog() {
+        inventoryDao.clearProductCatalog();
+    }
+
+    /**
+     * Hidden product from inventory.
+     * @param product The product to be hidden.
+     */
+    public void suspendProduct(Item product) {
+        inventoryDao.suspendProduct(product);
     }
 
 

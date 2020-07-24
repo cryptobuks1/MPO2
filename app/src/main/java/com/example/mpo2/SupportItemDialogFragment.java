@@ -11,11 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-import com.google.zxing.integration.android.IntentIntegratorSupportV4;
-
 import androidx.fragment.app.DialogFragment;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentIntegratorSupportV4;
+import com.google.zxing.integration.android.IntentResult;
 
 /**
  * A dialog of adding a Product.
@@ -27,7 +27,7 @@ import androidx.fragment.app.DialogFragment;
 public class SupportItemDialogFragment extends DialogFragment {
 
     private EditText barcodeBox;
-    private ItemCatalog itemCatalog;
+    private ItemCatalog productCatalog;
     private Button scanButton;
     private EditText priceBox;
     private EditText nameBox;
@@ -51,7 +51,7 @@ public class SupportItemDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
 
         try {
-            itemCatalog = Stock.getInstance().getProductCatalog();
+            productCatalog = Inventory.getInstance().getProductCatalog();
         } catch (DaoNoSetException e) {
             e.printStackTrace();
         }
@@ -79,7 +79,7 @@ public class SupportItemDialogFragment extends DialogFragment {
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IntentIntegratorSupportV4 scanIntegrator = new IntentIntegratorSupportV4(SupportItemDialogFragment.this); //NIKNIK
+                IntentIntegratorSupportV4 scanIntegrator = new IntentIntegratorSupportV4(SupportItemDialogFragment.this);
                 scanIntegrator.initiateScan();
             }
         });
@@ -95,7 +95,7 @@ public class SupportItemDialogFragment extends DialogFragment {
                             .show();
 
                 } else {
-                    boolean success = itemCatalog.addItem(nameBox
+                    boolean success = productCatalog.addProduct(nameBox
                             .getText().toString(), barcodeBox.getText()
                             .toString(), Double.parseDouble(priceBox.getText()
                             .toString()));

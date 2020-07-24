@@ -1,71 +1,82 @@
 package com.example.mpo2;
 
+import java.util.List;
+
 /**
- * This class is service locater for Product Catalog and Stock.
+ * Import log of ProductLot come in to store.
  *
  * @author Refresh Team
  *
  */
 public class Stock {
 
-    private StockExtension stock;
-    private ItemCatalog itemCatalog;
-    private static Stock instance = null;
-    private static StockDao stockDao = null;
+    private InventoryDao inventoryDao;
 
     /**
-     * Constructs Data Access Object of inventory.
-     * @throws DaoNoSetException if DAO is not exist.
+     * Constructs Data Access Object of inventory in ProductCatalog.
+     * @param inventoryDao DAO of inventory.
      */
-    private Stock() throws DaoNoSetException {
-        if (!isDaoSet()) {
-            throw new DaoNoSetException();
-        }
-        stock = new StockExtension(stockDao);
-        itemCatalog = new ItemCatalog(stockDao);
+    public Stock(InventoryDao inventoryDao) {
+        this.inventoryDao = inventoryDao;
     }
 
     /**
-     * Determines whether the DAO already set or not.
-     * @return true if the DAO already set; otherwise false.
+     * Constructs ProductLot and adds ProductLot to inventory.
+     * @param dateAdded date added of ProductLot.
+     * @param quantity quantity of ProductLot.
+     * @param product product of ProductLot.
+     * @param cost cost of ProductLot.
+     * @return
      */
-    public static boolean isDaoSet() {
-        return stockDao != null;
+    public boolean addProductLot(String dateAdded, int quantity, Item product, double cost) {
+        ItemLot productLot = new ItemLot(ItemLot. UNDEFINED_ID, dateAdded, quantity, product, cost);
+        int id = inventoryDao.addProductLot(productLot);
+        return id != -1;
     }
 
     /**
-     * Sets the database connector.
-     * @param dao Data Access Object of inventory.
+     * Returns list of ProductLot in inventory finds by id.
+     * @param id id of ProductLot.
+     * @return list of ProductLot in inventory finds by id.
      */
-    public static void setInventoryDao(StockDao dao) {
-        stockDao = dao;
+    public List<ItemLot> getProductLotByProductId(int id) {
+        return inventoryDao.getProductLotByProductId(id);
     }
 
     /**
-     * Returns product catalog using in this inventory.
-     * @return product catalog using in this inventory.
+     * Returns all ProductLots in inventory.
+     * @return all ProductLots in inventory.
      */
-    public ItemCatalog getProductCatalog() {
-        return itemCatalog;
+    public List<ItemLot> getAllProductLot() {
+        return inventoryDao.getAllProductLot();
     }
 
     /**
-     * Returns stock using in this inventory.
-     * @return stock using in this inventory.
+     * Returns Stock in inventory finds by id.
+     * @param id id of Stock.
+     * @return Stock in inventory finds by id.
      */
-    public StockExtension getStock() {
-        return stock;
+    public int getStockSumById(int id) {
+        return inventoryDao.getStockSumById(id);
     }
 
     /**
-     * Returns the instance of this singleton class.
-     * @return instance of this class.
-     * @throws DaoNoSetException if DAO was not set.
+     * Updates quantity of product.
+     * @param productId id of product.
+     * @param quantity quantity of product.
      */
-    public static Stock getInstance() throws DaoNoSetException {
-        if (instance == null)
-            instance = new Stock();
-        return instance;
+    public void updateStockSum(int productId, int quantity) {
+        inventoryDao.updateStockSum(productId,quantity);
+
     }
+
+    /**
+     * Clear Stock.
+     */
+    public void clearStock() {
+        inventoryDao.clearStock();
+
+    }
+
 
 }

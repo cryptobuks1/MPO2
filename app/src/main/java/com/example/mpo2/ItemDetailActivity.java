@@ -3,13 +3,13 @@ package com.example.mpo2;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,8 +23,6 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +35,9 @@ import java.util.Map;
 @SuppressLint("NewApi")
 public class ItemDetailActivity extends Activity {
 
-    private ItemCatalog itemCatalog;
-    private StockExtension stock;
-    private Item item;
+    private ItemCatalog productCatalog;
+    private Stock stock;
+    private Item product;
     private List<Map<String, String>> stockList;
     private EditText nameBox;
     private EditText barcodeBox;
@@ -87,20 +85,20 @@ public class ItemDetailActivity extends Activity {
         initiateActionBar();
 
         try {
-            stock = Stock.getInstance().getStock();
-            itemCatalog = Stock.getInstance().getProductCatalog();
+            stock = Inventory.getInstance().getStock();
+            productCatalog = Inventory.getInstance().getProductCatalog();
         } catch (DaoNoSetException e) {
             e.printStackTrace();
         }
 
         id = getIntent().getStringExtra("id");
-        item = itemCatalog.getItemById(Integer.parseInt(id));
+        product = productCatalog.getProductById(Integer.parseInt(id));
 
         initUI(savedInstanceState);
         remember = new String[3];
-        nameBox.setText(item.getName());
-        priceBox.setText(item.getUnitPrice() + "");
-        barcodeBox.setText(item.getBarcode());
+        nameBox.setText(product.getName());
+        priceBox.setText(product.getUnitPrice() + "");
+        barcodeBox.setText(product.getBarcode());
 
     }
 
@@ -210,12 +208,12 @@ public class ItemDetailActivity extends Activity {
         barcodeBox.setFocusable(false);
         barcodeBox.setFocusableInTouchMode(false);
         barcodeBox.setBackgroundColor(Color.parseColor("#87CEEB"));
-        item.setName(nameBox.getText().toString());
+        product.setName(nameBox.getText().toString());
         if(priceBox.getText().toString().equals(""))
             priceBox.setText("0.0");
-        item.setUnitPrice(Double.parseDouble(priceBox.getText().toString()));
-        item.setBarcode(barcodeBox.getText().toString());
-        itemCatalog.editItem(item);
+        product.setUnitPrice(Double.parseDouble(priceBox.getText().toString()));
+        product.setBarcode(barcodeBox.getText().toString());
+        productCatalog.editProduct(product);
         submitEditButton.setVisibility(View.INVISIBLE);
         cancelEditButton.setVisibility(View.INVISIBLE);
         openEditButton.setVisibility(View.VISIBLE);
@@ -264,7 +262,7 @@ public class ItemDetailActivity extends Activity {
     }
 
     /**
-     * Show adding item lot.
+     * Show adding product lot.
      */
     private void showAddProductLot(){
         Viewlayout = inflater.inflate(R.layout.layout_additemlot,
@@ -287,7 +285,7 @@ public class ItemDetailActivity extends Activity {
                     boolean success = stock.addProductLot(
                             DateTimeSettings.getCurrentTime(),
                             Integer.parseInt(quantityBox.getText().toString()),
-                            item,
+                            product,
                             Double.parseDouble(costBox.getText().toString()));
 
                     if (success) {
