@@ -159,7 +159,7 @@ public class InvoicingFragment extends UpdateFragment {
         Calendar eTime = (Calendar) currentTime.clone();
 
         /**if(period == DAILY){ //NIKNIK
-            currentBox.setText(" [" + DateTimeSettings.getSQLDateFormat(currentTime) +  "] "); NIKNIK
+            currentBox.setText(" [" + DateTimeSettings.getSQLDateFormat(currentTime) +  "] "); //NIKNIK
             currentBox.setTextSize(16);
         } else if (period == WEEKLY){
             while(cTime.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
