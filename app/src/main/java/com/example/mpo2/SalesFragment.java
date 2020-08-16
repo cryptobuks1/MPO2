@@ -84,7 +84,7 @@ public class SalesFragment extends UpdateFragment {
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ViewPager viewPager = ((MainActivity) getActivity()).getViewPager();
+                ViewPager viewPager = ((MainMenu) getActivity()).getViewPager();
                 viewPager.setCurrentItem(1);
             }
         });

@@ -46,7 +46,7 @@ public class InventoryFragment extends UpdateFragment {
 
     private ViewPager viewPager;
     private Registers register;
-    private MainActivity main;
+    private MainMenu main;
 
     private UpdateFragment saleFragment;
     private Resources res;
@@ -79,7 +79,7 @@ public class InventoryFragment extends UpdateFragment {
         scanButton = (Button) view.findViewById(R.id.scanButton);
         searchBox = (EditText) view.findViewById(R.id.searchBox);
 
-        main = (MainActivity) getActivity();
+        main = (MainMenu) getActivity();
         viewPager = main.getViewPager();
 
         initUI();

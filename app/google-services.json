@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "262768512214",
+    "firebase_url": "https://mpos-fb853.firebaseio.com",
+    "project_id": "mpos-fb853",
+    "storage_bucket": "mpos-fb853.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262768512214:android:89a28594fb8005aeb60d77",
+        "android_client_info": {
+          "package_name": "com.example.mpo2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "262768512214-7dt9rlm2jk5vogepsufkvh4j30drn7gv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAChRQQN_uWRNo1un0tlxZ0WIWBHwX1GDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "262768512214-7dt9rlm2jk5vogepsufkvh4j30drn7gv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

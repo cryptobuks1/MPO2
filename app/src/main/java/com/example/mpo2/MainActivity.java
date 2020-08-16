@@ -1,212 +1,82 @@
 package com.example.mpo2;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
 
-import com.google.android.material.tabs.TabItem;
-import com.google.android.material.tabs.TabLayout;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
-
-    private TabLayout tablayout;
-    private ViewPager viewPager;
-    private TabItem inventoryfragment, salesfragment, invoicingfragment;
-    private Resources res;
-    public PagerAdapter pagerAdapter;
-
-
-    private ItemCatalog productCatalog;
-    private String productId;
-    private Item product;
-    private static boolean SDK_SUPPORTED;
-
+    EditText emailId, password;
+    Button btnSignUp;
+    TextView tvSignIn;
+    FirebaseAuth mFirebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tablayout = (TabLayout) findViewById(R.id.tablayout);
-        inventoryfragment = (TabItem) findViewById(R.id.inventory);
-        salesfragment = (TabItem) findViewById(R.id.sales);
-        invoicingfragment = (TabItem) findViewById(R.id.invoicing);
-        viewPager = findViewById(R.id.viewpager);
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        emailId = findViewById(R.id.editText);
+        password = findViewById(R.id.editText2);
+        btnSignUp = findViewById(R.id.button2);
+        tvSignIn = findViewById(R.id.textView);
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = emailId.getText().toString();
+                String pwd = password.getText().toString();
+                if(email.isEmpty()){
+                    emailId.setError("Please enter email id");
+                    emailId.requestFocus();
+                }
+                else  if(pwd.isEmpty()){
+                    password.setError("Please enter your password");
+                    password.requestFocus();
+                }
+                else  if(email.isEmpty() && pwd.isEmpty()){
+                    Toast.makeText(MainActivity.this,"Fields Are Empty!",Toast.LENGTH_SHORT).show();
+                }
+                else  if(!(email.isEmpty() && pwd.isEmpty())){
+                    mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(!task.isSuccessful()){
+                                Toast.makeText(MainActivity.this,"SignUp Unsuccessful, Please Try Again",Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                startActivity(new Intent(MainActivity.this,HomeActivity.class));
+                            }
+                        }
+                    });
+                }
+                else{
+                    Toast.makeText(MainActivity.this,"Error Occurred!",Toast.LENGTH_SHORT).show();
 
-        pagerAdapter = new PageAdapter(getSupportFragmentManager(), tablayout.getTabCount());
-        viewPager.setAdapter(pagerAdapter);
-
-        tablayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
-
-            public void onTabSelected(TabLayout.Tab tab){
-                viewPager.setCurrentItem(tab.getPosition());
-                if (tab.getPosition() == 0) {
-                    pagerAdapter.notifyDataSetChanged();
-                }  else if (tab.getPosition() == 1) {
-                    pagerAdapter.notifyDataSetChanged();
-                }  else if (tab.getPosition() == 2) {
-                    pagerAdapter.notifyDataSetChanged();
                 }
             }
-
-            public void onTabUnselected(TabLayout.Tab tab){
-
-            }
-
-            public void onTabReselected(TabLayout.Tab tab){
-
-            }
         });
 
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tablayout));
-
-    }
-
-    /**
-     * Get view-pager
-     * @return
-     */
-    public ViewPager getViewPager() {
-        return viewPager;
-    }
-
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            openQuitDialog();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-
-
-    /**
-     * Open quit dialog.
-     */
-    private void openQuitDialog() {
-        AlertDialog.Builder quitDialog = new AlertDialog.Builder(
-                MainActivity.this);
-        quitDialog.setTitle(res.getString(R.string.dialog_quit));
-        quitDialog.setPositiveButton(res.getString(R.string.quit), new DialogInterface.OnClickListener() {
+        tvSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this,LoginActivity.class);
+                startActivity(i);
             }
         });
-
-        quitDialog.setNegativeButton(res.getString(R.string.no), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        quitDialog.show();
     }
-
-
-    /**
-     * Option on-click handler.
-     * @param view
-     */
-    public void optionOnClickHandler(View view) {
-        viewPager.setCurrentItem(0);
-        String id = view.getTag().toString();
-        productId = id;
-        try {
-            productCatalog = Inventory.getInstance().getProductCatalog();
-        } catch (DaoNoSetException e) {
-            e.printStackTrace();
-        }
-        product = productCatalog.getProductById(Integer.parseInt(productId));
-        openDetailDialog();
-
-    }
-
-
-
-
-
-    /**
-     * Open detail dialog.
-     */
-    private void openDetailDialog() {
-        AlertDialog.Builder quitDialog = new AlertDialog.Builder(MainActivity.this);
-        //quitDialog.setTitle(Item.getName()); NIKNIK
-        quitDialog.setPositiveButton(res.getString(R.string.remove), new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                openRemoveDialog();
-            }
-        });
-
-        quitDialog.setNegativeButton(res.getString(R.string.product_detail), new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent newActivity = new Intent(MainActivity.this,
-                        ItemDetailActivity.class);
-                newActivity.putExtra("id", productId);
-                startActivity(newActivity);
-            }
-        });
-
-        quitDialog.show();
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Open remove dialog.
-     */
-    private void openRemoveDialog() {
-        AlertDialog.Builder quitDialog = new AlertDialog.Builder(
-                MainActivity.this);
-        quitDialog.setTitle(res.getString(R.string.dialog_remove_product));
-        quitDialog.setPositiveButton(res.getString(R.string.no), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        quitDialog.setNegativeButton(res.getString(R.string.remove), new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //ItemCatalog.suspendproduct() NIKNIK
-                //pagerAdapter.update(0);
-            }
-        });
-
-        quitDialog.show();
-    }
-
 }
 
 
